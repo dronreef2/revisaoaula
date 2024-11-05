@@ -77,3 +77,43 @@ function exibirAddNumber() {
     const resultado = addNumber(array, numero);
     document.getElementById('resultadoAddNumber').innerText = "Array atualizado: " + resultado.join(", ");
 }
+const api_key = "92d5365c8a52bbc1738e0437835a1301";
+
+document.getElementById('cityForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const city = document.getElementById('cityInput').value;
+    getWeatherData(city);
+});
+
+function getWeatherData(city) {
+    const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}&units=metric&lang=pt_br`;
+
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        const weatherDiv = document.getElementById('weather');
+        const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+        weatherDiv.innerHTML = `
+            <h2>Clima em ${data.name}</h2>
+            <img src="${icon}" alt="Ícone do clima">
+            <div class="weather-item">
+                <p>Temperatura: ${data.main.temp}°C</p>
+            </div>
+            <div class="weather-item">
+                <p>Sensação Térmica: ${data.main.feels_like}°C</p>
+            </div>
+            <div class="weather-item">
+                <p>Descrição: ${data.weather[0].description}</p>
+            </div>
+            <div class="weather-item">
+                <p>Pressão: ${data.main.pressure} hPa</p>
+            </div>
+            <div class="weather-item">
+                <p>Vento: ${data.wind.speed} m/s</p>
+            </div>
+        `;
+    })
+    .catch(error => {
+        alert('Erro ao obter dados do clima: ' + error.message);
+    });
+}
